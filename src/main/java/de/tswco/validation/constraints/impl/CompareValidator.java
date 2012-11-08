@@ -10,22 +10,22 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
 import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderDefinedContext;
 
-import de.tswco.validation.constraints.CompareObjects;
+import de.tswco.validation.constraints.Compare;
 import de.tswco.validation.constraints.ComparisonMode;
 
-public class CompareObjectsValidator implements ConstraintValidator<CompareObjects, Object> {
+public class CompareValidator implements ConstraintValidator<Compare, Object> {
 
-	private Collection<String> propertyNames;
-	private Collection<String> errorPropertyNames;
+	private Collection<String> attributes;
+	private Collection<String> errorAttributes;
 	private Class<?> propertyClass;
 	private ComparisonMode comparisonMode;
 	private boolean allowNull;
 	private boolean allowEmpty;
 	
 	@Override
-	public void initialize(CompareObjects constraintAnnotation) {
-		this.propertyNames  = Arrays.asList(constraintAnnotation.propertyNames());
-		this.errorPropertyNames  = Arrays.asList(constraintAnnotation.errorPropertyNames());
+	public void initialize(Compare constraintAnnotation) {
+		this.attributes  = Arrays.asList(constraintAnnotation.attributes());
+		this.errorAttributes  = Arrays.asList(constraintAnnotation.errorAttributes());
 		this.propertyClass  = constraintAnnotation.propertyClass();
 		this.comparisonMode = constraintAnnotation.matchMode();
 		this.allowNull      = constraintAnnotation.allowNull();
@@ -36,8 +36,8 @@ public class CompareObjectsValidator implements ConstraintValidator<CompareObjec
 	public boolean isValid(Object target, ConstraintValidatorContext context) {
 		boolean isValid = true;
 		
-		List<Object> propertyValues = new ArrayList<>(propertyNames.size());
-		for(String propertyName: propertyNames) {
+		List<Object> propertyValues = new ArrayList<>(attributes.size());
+		for(String propertyName: attributes) {
 			Object propertyValue = ConstraintValidatorHelper.getPropertyValue(propertyClass, propertyName, target);
 			
 			if((propertyValue == null) && (!allowNull)) {
@@ -67,10 +67,10 @@ public class CompareObjectsValidator implements ConstraintValidator<CompareObjec
 			String targetClassName = target.getClass().getSimpleName();
 			targetClassName = targetClassName.substring(0, 1).toLowerCase() + targetClassName.substring(1); 
 			
-			for(String propertyName: errorPropertyNames) {
+			for(String propertyName: errorAttributes) {
 				if(message.isEmpty()) {
 					message = String.format(resourceMessageFormat, 
-							CompareObjects.class.getSimpleName(),
+							Compare.class.getSimpleName(),
 							targetClassName,
 							propertyName);
 				}

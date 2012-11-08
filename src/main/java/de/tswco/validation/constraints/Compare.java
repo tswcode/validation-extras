@@ -8,18 +8,18 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import de.tswco.validation.constraints.impl.CompareObjectsValidator;
+import de.tswco.validation.constraints.impl.CompareValidator;
 
 import static java.lang.annotation.ElementType.TYPE;
 
 @Documented
-@Constraint(validatedBy = CompareObjectsValidator.class)
+@Constraint(validatedBy = CompareValidator.class)
 @Target({TYPE})
 @Retention(RUNTIME)
-public @interface CompareObjects {
-	String[] propertyNames();
+public @interface Compare {
+	String[] attributes();
 	Class<?> propertyClass() default String.class;
-	String[] errorPropertyNames();
+	String[] errorAttributes();
 	ComparisonMode matchMode() default ComparisonMode.EQUAL;
 	boolean allowNull() default false;
 	boolean allowEmpty() default false;
